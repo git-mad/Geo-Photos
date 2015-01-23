@@ -1,9 +1,12 @@
 package com.gitmad.geophotos;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -12,13 +15,43 @@ public class LoginActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
+
+        //Initialize Email, Username, and EditText here.
+
+
+
+        Button loginButton = (Button) findViewById(R.id.loginButton);
+
+        //Make a click listener for the buttons.
+        Intent i = new Intent(this,HomeScreen.class);
+
+        loginButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        login();
+                    }
+                }
+        );
     }
+
+    //TODO: Override appropriate method to persist contents typed in the EditTexts
+    //Hint: Think about the ActivityLifecycle and the methods it has.
+    //code
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
+    }
+
+    public boolean login()
+    {
+        //TODO: Add authentication logic here.
+        Intent i = new Intent(this,HomeScreen.class);
+        startActivity(i);
         return true;
     }
 
