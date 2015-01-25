@@ -12,25 +12,19 @@ import android.widget.EditText;
 
 public class LoginActivity extends ActionBarActivity {
 
+    private Button loginButton;
+    private EditText emailEditText;
+    private EditText userNameEditText;
+    private EditText passwordEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
-        //TODO: Initialize Email, Username, and EditText here.
+        //TODO: Initialize Email, Username, and Password EditText here.
         //exe. EditText emailEditText = (EditText) findViewById(R.id.emailEditText);
-        Button loginButton = (Button) findViewById(R.id.loginButton);
-
-        //NOTE: We need to manage the Activity Lifecycle properly.
-        //See http://developer.android.com/training/basics/activity-lifecycle/index.html
-        //TODO: Keep the state of the textboxes when the user exits and re-enters the application.
-        //Override appropriate methods in the Activity Lifecycle callbacks and use the Bundle savedInstanceState to store
-        //and retrieve information
-
-        //Make a click listener for the buttons.
-        //TODO: Send the username to the HomeScreen Activity
-        //Hint: Use Extras with the intent to get send the username over.
-        Intent i = new Intent(this,HomeScreen.class);
+        loginButton = (Button) findViewById(R.id.loginButton);
 
         loginButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -40,6 +34,28 @@ public class LoginActivity extends ActionBarActivity {
                     }
                 }
         );
+    }
+
+    //NOTE: We need to manage the Activity Lifecycle properly.
+    //See http://developer.android.com/training/basics/activity-lifecycle/index.html
+    //TODO: Keep the state of the textboxes for when Activity gets destroyed
+    //This happens when user presses the back button, rotates screen, etc.
+    //http://developer.android.com/training/basics/activity-lifecycle/recreating.html
+    //TODO: Override onSaveInstanceState and onRestoreInstanceState
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        // Always call the superclass so it can save the view hierarchy state
+        //Notice how we do this last
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        //Notice how we do this first
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -52,6 +68,10 @@ public class LoginActivity extends ActionBarActivity {
     public void login()
     {
         //Authentication logic will be added here in the future.
+        //TODO: Send the username to the HomeScreen Activity
+        //Hint: Use Extras with the intent to get send the username over.
+        //Pro Tip: Get the String from the EditText with userName.getText().toString();
+
         Intent i = new Intent(this,HomeScreen.class);
         startActivity(i);
     }
