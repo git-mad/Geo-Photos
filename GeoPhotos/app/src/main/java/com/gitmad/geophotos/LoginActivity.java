@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -16,13 +17,19 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
-        //Initialize Email, Username, and EditText here.
-
-
-
+        //TODO: Initialize Email, Username, and EditText here.
+        //exe. EditText emailEditText = (EditText) findViewById(R.id.emailEditText);
         Button loginButton = (Button) findViewById(R.id.loginButton);
 
+        //NOTE: We need to manage the Activity Lifecycle properly.
+        //See http://developer.android.com/training/basics/activity-lifecycle/index.html
+        //TODO: Keep the state of the textboxes when the user exits and re-enters the application.
+        //Override appropriate methods in the Activity Lifecycle callbacks and use the Bundle savedInstanceState to store
+        //and retrieve information
+
         //Make a click listener for the buttons.
+        //TODO: Send the username to the HomeScreen Activity
+        //Hint: Use Extras with the intent to get send the username over.
         Intent i = new Intent(this,HomeScreen.class);
 
         loginButton.setOnClickListener(
@@ -35,11 +42,6 @@ public class LoginActivity extends ActionBarActivity {
         );
     }
 
-    //TODO: Override appropriate method to persist contents typed in the EditTexts
-    //Hint: Think about the ActivityLifecycle and the methods it has.
-    //code
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -47,12 +49,11 @@ public class LoginActivity extends ActionBarActivity {
         return true;
     }
 
-    public boolean login()
+    public void login()
     {
-        //TODO: Add authentication logic here.
+        //Authentication logic will be added here in the future.
         Intent i = new Intent(this,HomeScreen.class);
         startActivity(i);
-        return true;
     }
 
     @Override

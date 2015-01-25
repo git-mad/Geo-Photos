@@ -4,14 +4,24 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.widget.TextView;
 
 public class HomeScreen extends ActionBarActivity {
+
+    private String username;
+    private TextView welcomeTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen_layout);
+
+        //TODO: Grab the username from the extras, set the username string appropriately.
+        username = "";
+        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
+        welcomeTextView.setText("Welcome, "+ username);
+
+        //Stuck? See here: http://stackoverflow.com/questions/4233873/how-to-get-extra-data-from-intent-in-android
     }
 
     @Override
