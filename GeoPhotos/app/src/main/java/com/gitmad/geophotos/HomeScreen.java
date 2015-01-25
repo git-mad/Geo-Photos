@@ -1,5 +1,6 @@
 package com.gitmad.geophotos;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,7 +9,9 @@ import android.widget.TextView;
 
 public class HomeScreen extends ActionBarActivity {
 
-    private String username;
+    private String userName;
+    private String emailAddress;
+    private String password;
     private TextView welcomeTextView;
 
     @Override
@@ -16,12 +19,23 @@ public class HomeScreen extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen_layout);
 
+        Bundle bundle = getIntent().getExtras();
         //TODO: Grab the username from the extras, set the username string appropriately.
-        username = "";
-        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
-        welcomeTextView.setText("Welcome, "+ username);
-
         //Stuck? See here: http://stackoverflow.com/questions/4233873/how-to-get-extra-data-from-intent-in-android
+
+        if(bundle.containsKey("userName")){
+            userName = bundle.getString("userName");
+        }
+        if(bundle.containsKey("emailAddress")){
+            emailAddress = bundle.getString("emailAddress");
+        }
+        if(bundle.containsKey("password")){
+            password = bundle.getString("password");
+        }
+
+        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
+        welcomeTextView.setText("Welcome, "+ userName);
+
     }
 
     @Override
