@@ -1,4 +1,4 @@
-package com.gitmad.geophotos;
+package com.gitmad.geophotos.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.gitmad.geophotos.R;
 
 public class HomeScreen extends ActionBarActivity {
 
