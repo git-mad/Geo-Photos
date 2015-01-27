@@ -7,9 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.gitmad.geophotos.Models.User;
 import com.gitmad.geophotos.R;
 
 public class HomeScreen extends ActionBarActivity {
+
+    public static final String KEY_USER_DATA = "userDataKey";
 
     private String userName;
     private String emailAddress;
@@ -25,14 +28,10 @@ public class HomeScreen extends ActionBarActivity {
         //TODO: Grab the username from the extras, set the username string appropriately.
         //Stuck? See here: http://stackoverflow.com/questions/4233873/how-to-get-extra-data-from-intent-in-android
 
-        if(bundle.containsKey("userName")){
-            userName = bundle.getString("userName");
-        }
-        if(bundle.containsKey("emailAddress")){
-            emailAddress = bundle.getString("emailAddress");
-        }
-        if(bundle.containsKey("password")){
-            password = bundle.getString("password");
+        if (bundle != null && bundle.containsKey(KEY_USER_DATA)) {
+            User userData = (User) bundle.getSerializable(KEY_USER_DATA);
+            userName = userData.getUserName();
+            emailAddress = userData.getEmailAddress();
         }
 
         welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);

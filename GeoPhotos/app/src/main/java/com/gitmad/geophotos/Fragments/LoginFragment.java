@@ -127,17 +127,16 @@ public class LoginFragment extends Fragment {
         //TODO Authentication logic will be added here in the future.
         //Hint: Use Extras with the intent to get send the username over.
         //Pro Tip: Get the String from the EditText with userName.getText().toString();
-
-        Intent i = new Intent(getActivity(), HomeScreen.class);
-
+        
         if ((userNameEditText.getText() != null) && (passwordEditText.getText() != null)
                     && (emailEditText.getText() != null)) {
-            i.putExtra("userName", userNameEditText.getText().toString());
-            i.putExtra("emailAddress", emailEditText.getText().toString());
-            i.putExtra("password", passwordEditText.getText().toString());
-        }
+            //Create object to encapsulate user data//
+            User userInfo = new User(userNameEditText.getText().toString(),
+                    emailEditText.getText().toString());
 
-        startActivity(i);
+            //pass user data back to listener//
+            listener.loginSuccessful(userInfo);
+        }
     }
 
 

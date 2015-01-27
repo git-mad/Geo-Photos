@@ -9,10 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.gitmad.geophotos.Fragments.LoginFragment;
+import com.gitmad.geophotos.Models.User;
 import com.gitmad.geophotos.R;
 
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends ActionBarActivity implements LoginFragment.LoginListener {
 
     private Button loginButton;
     private EditText emailEditText;
@@ -45,5 +47,17 @@ public class LoginActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void loginSuccessful(User user) {
+        Intent intent = new Intent(this, HomeScreen.class);
+        intent.putExtra(HomeScreen.KEY_USER_DATA, user);
+        startActivity(intent);
+    }
+
+    @Override
+    public void loginFailed(LoginFragment.LoginFailureReason reason) {
+
     }
 }
