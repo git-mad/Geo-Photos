@@ -1,18 +1,14 @@
 package com.gitmad.geophotos.Fragments;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.gitmad.geophotos.Activities.HomeScreen;
 import com.gitmad.geophotos.Models.User;
 import com.gitmad.geophotos.R;
 
@@ -94,25 +90,6 @@ public class LoginFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-//    @Override
-//    public void onViewStateRestored(Bundle savedInstanceState) {
-//        // Always call the superclass so it can restore the view hierarchy
-//        //Notice how we do this first
-//        super.onViewStateRestored(savedInstanceState);
-//
-//        if (savedInstanceState != null) {
-//            if (savedInstanceState.containsKey("emailAddress")) {
-//                emailEditText.setText(savedInstanceState.getString("emailAddress"));
-//            }
-//            if (savedInstanceState.containsKey("userName")) {
-//                userNameEditText.setText(savedInstanceState.getString("emailAddress"));
-//            }
-//            if (savedInstanceState.containsKey("password")) {
-//                passwordEditText.setText(savedInstanceState.getString("password"));
-//            }
-//        }
-//    }
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -127,7 +104,7 @@ public class LoginFragment extends Fragment {
         //TODO Authentication logic will be added here in the future.
         //Hint: Use Extras with the intent to get send the username over.
         //Pro Tip: Get the String from the EditText with userName.getText().toString();
-        
+
         if ((userNameEditText.getText() != null) && (passwordEditText.getText() != null)
                     && (emailEditText.getText() != null)) {
             //Create object to encapsulate user data//
