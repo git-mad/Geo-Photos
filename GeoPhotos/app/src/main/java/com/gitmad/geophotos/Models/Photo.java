@@ -18,14 +18,14 @@ public class Photo implements Parcelable {
 
     private long id;
 
-    private float longitude;
-    private float latitude;
+    private double longitude;
+    private double latitude;
     private String notes;
     private long timeTaken;
     private Bitmap bitmap;
     private long albumId;
 
-    public Photo(long id, float longitude, float latitude, String notes, long timeTaken,
+    public Photo(long id, double longitude, double latitude, String notes, long timeTaken,
                  Bitmap bitmap, long albumId) {
         this.id = id;
         this.longitude = longitude;
@@ -36,7 +36,7 @@ public class Photo implements Parcelable {
         this.albumId = albumId;
     }
 
-    public Photo(long id, float longitude, float latitude, String notes, long timeTaken) {
+    public Photo(long id, double longitude, double latitude, String notes, long timeTaken) {
         this.id = id;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -48,11 +48,11 @@ public class Photo implements Parcelable {
         return id;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
@@ -98,8 +98,8 @@ public class Photo implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeFloat(longitude);
-        dest.writeFloat(latitude);
+        dest.writeDouble(longitude);
+        dest.writeDouble(latitude);
         dest.writeString(notes);
         dest.writeLong(timeTaken);
         dest.writeParcelable(bitmap, flags);
