@@ -1,6 +1,7 @@
 package com.gitmad.geophotos.Fragments;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -35,6 +36,8 @@ public class PhotoInfoFragment extends Fragment {
     private Photo photo;
     private String albumName;
 
+    private MapFragment mapFragment;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -63,6 +66,9 @@ public class PhotoInfoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
+
         if (getArguments() != null) {
             photo = getArguments().getParcelable(ARG_PHOTO);
             albumName = getArguments().getString(ARG_ALBUM_NAME);
@@ -106,19 +112,59 @@ public class PhotoInfoFragment extends Fragment {
             MAP STUPH
          */
 
-        //use FragmentManager to find fragment, rather than view hierarchy//
-        MapFragment mapFrag = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
+        //should only add if it is not being reinstantiated//
+        if (mapFragment != null && !mapFragment.isAdded()) {
+
+            //instantiate anonymous subclass of MapFragment and add to view//
+            mapFragment = new MapFragment() {
+                @Override
+                public void onAttach(Activity activity) {
+                    super.onAttach(activity);
+                    GoogleMap map = getMap();
+
+                    //use MarkerOptions to add Marker to map//
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(photo.getLatitude(), photo.getLongitude()))
+                            .title("Photo taken here!");
+                    map.addMarker(markerOptions);
+                }
+            };
+
+            getFragmentManager().beginTransaction()
+                    .add(R.id.mapFrameLayout, mapFragment)
+                    .commit();
+        }
 
 
-        //setup map how we choose//
-        GoogleMap map = mapFrag.getMap();
 
-        //use MarkerOptions to add Marker to map//
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(new LatLng(photo.getLatitude(), photo.getLongitude()))
-                .title("Photo taken here!");
-        map.addMarker(markerOptions);
-
+//        //use FragmentManager to find fragment, rather than view hierarchy//
+//        MapFragment mapFrag = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
+//
+//
+//        //setup map how we choose//
+//        GoogleMap map = mapFrag.getMap();
+//
+//        //use MarkerOptions to add Marker to map//
+//        MarkerOptions markerOptions = new MarkerOptions()
+//                .position(new LatLng(photo.getLatitude(), photo.getLongitude()))
+//                .title("Photo taken here!");
+//        map.addMarker(markerOptions);
+//
         return rootView;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (mapFragment != null && mapFragment.isAdded()) {
+            if (getActivity() != null) {
+                FragmentManager manager = getFragmentManager();
+                if (manager != null) {
+                    manager.beginTransaction()
+                            .remove(mapFragment)
+                            .commit();
+                }
+            }
+        }
     }
 }

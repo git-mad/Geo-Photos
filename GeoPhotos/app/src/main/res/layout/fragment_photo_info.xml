@@ -4,12 +4,10 @@
     android:orientation="vertical"
     tools:context="com.gitmad.geophotos.Fragments.PhotoInfoFragment">
 
-    <fragment
+    <FrameLayout
+        android:id="@+id/mapFrameLayout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:id="@+id/mapFragment"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="300dp"></FrameLayout>
 
     <TextView
         android:layout_width="wrap_content"
