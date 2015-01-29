@@ -1,6 +1,5 @@
 package com.gitmad.geophotos.Activities;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
@@ -110,6 +109,8 @@ public class HomeScreen extends ActionBarActivity
         if (resultCode == ConnectionResult.SUCCESS) {
             return true;
         } else {
+
+            //try to resolve error//
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                     CONNECTION_FAILURE_RESOLUTION_REQUEST);
             if (errorDialog != null) {
@@ -205,12 +206,15 @@ public class HomeScreen extends ActionBarActivity
 
             Bitmap bmp = (Bitmap) data.getExtras().get("data");
 
-            //try again..//
+            //try again. Location sometimes takes time to load and taking the picture might//
+            //have given it the time necessary//
             if (mLastLocation == null) {
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             }
 
             Photo photo;
+
+            //If location is still unavailable, set a value that is impossible//
             if (mLastLocation == null) {
                 photo = new Photo(-1, Double.MIN_VALUE, Double.MIN_VALUE,
                         null, Calendar.getInstance().getTimeInMillis());
@@ -219,6 +223,7 @@ public class HomeScreen extends ActionBarActivity
                         null, Calendar.getInstance().getTimeInMillis());
             }
 
+            //Let user edit the notes for the photo before saving//
             EditNotesDialogFragment.newInstance(photo)
                     .show(getFragmentManager(), "notesDialogFrag");
         } else if (requestCode == CONNECTION_FAILURE_RESOLUTION_REQUEST) {
@@ -236,6 +241,8 @@ public class HomeScreen extends ActionBarActivity
 
     @Override
     public void onPicEdited(Photo newPhoto) {
+
+        //user is done editing notes, now save photo//
 
         AsyncTask<Photo, Void, Void> writePhotoTask = new AsyncTask<Photo, Void, Void>() {
             @Override

@@ -133,4 +133,27 @@ public class Photo implements Parcelable {
         bitmap = (Bitmap) in.readParcelable(ClassLoader.getSystemClassLoader());
         albumId = in.readLong();
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if ((other == null) || !(other instanceof Photo)) {
+            return false;
+        }
+
+        Photo otherPhoto = (Photo) other;
+
+        return otherPhoto.getId() == getId()
+                && otherPhoto.getNotes().equals(getNotes())
+                && otherPhoto.getLatitude() == getLatitude()
+                && otherPhoto.getAlbumId() == getAlbumId()
+                && otherPhoto.getLongitude() == getLongitude()
+                && otherPhoto.getTimeTaken() == getTimeTaken();
+                // bitmaps not compared because this operation would be costly,
+                // and likely unnecessary //
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) id;
+    }
 }
