@@ -5,21 +5,39 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.gitmad.geophotos.Fragments.PhotoInfoFragment;
+import com.gitmad.geophotos.Models.Photo;
 import com.gitmad.geophotos.R;
 
-public class ViewPhotosActivity extends ActionBarActivity {
+public class PhotoInfoActivity extends ActionBarActivity {
+
+    private PhotoInfoFragment infoFragment;
+    private Photo photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_photos);
+        setContentView(R.layout.activity_photo_info);
+
+        if (savedInstanceState == null) {
+            //get photo from intent, and create fragment, passing photo//
+            photo = getIntent().getExtras().getParcelable(ViewPhotoActivity.KEY_PHOTO);
+            infoFragment = PhotoInfoFragment.newInstance(photo);
+
+            //replace is safer in general, as it will remove any fragments already attached
+            //to the view//
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.photoInfoFrameLayout, infoFragment, "infofrag")
+                    .commit();
+        }
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_view_photos, menu);
+        getMenuInflater().inflate(R.menu.menu_photo_info, menu);
         return true;
     }
 

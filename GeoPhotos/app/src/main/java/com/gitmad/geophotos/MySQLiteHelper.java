@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "GeoPhotoDatabase";
+    public static final String DB_NAME = "GeoPhotoDatabase";
     private static final int DB_VERSION = 1;
 
     /*
@@ -25,7 +25,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
     //** Column Names **//
-    public static final String COLUMN_ID = "_db";
+    public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NOTES = "notes";
     public static final String COLUMN_TIME_TAKEN = "timeTaken";
     public static final String COLUMN_LONGITUDE = "longitude";
@@ -36,25 +36,24 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public static final String[] COLUMNS_PHOTOS_TABLE = {
             COLUMN_ID, COLUMN_ALBUM_ID, COLUMN_IMAGE, COLUMN_LATITUDE, COLUMN_LONGITUDE,
-            COLUMN_NOTES, COLUMN_TIME_TAKEN, COLUMN_TITLE
+            COLUMN_NOTES, COLUMN_TIME_TAKEN
     };
 
     public static final String[] COLUMNS_ALBUMS_TABLE = {
             COLUMN_ID, COLUMN_TITLE, COLUMN_NOTES
     };
 
-    private static final String CREATE_PHOTOS_TABLE_SQL = "CREATE TABLE "+TABLE_PHOTOS+"( "+
+    private static final String CREATE_PHOTOS_TABLE_SQL = "CREATE TABLE IF NOT EXISTS "+TABLE_PHOTOS+"( "+
             COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
             COLUMN_LONGITUDE+" REAL NOT NULL, "+
             COLUMN_LATITUDE+" REAL NOT NULL, "+
             COLUMN_NOTES+" TEXT NOT NULL, "+
-            COLUMN_TITLE+" TEXT NOT NULL, "+
             COLUMN_TIME_TAKEN+" INTEGER NOT NULL, "+
             COLUMN_IMAGE+" BLOB NOT NULL, "+
             COLUMN_ALBUM_ID+" INTEGER NOT NULL, "+
             "FOREIGN KEY("+COLUMN_ALBUM_ID+") REFERENCES "+TABLE_ALBUMS+"("+COLUMN_ID+") );";
 
-    private static final String CREATE_ALBUMS_TABLE_SQL = "CREATE TABLE "+TABLE_PHOTOS+"( "+
+    private static final String CREATE_ALBUMS_TABLE_SQL = "CREATE TABLE IF NOT EXISTS "+TABLE_ALBUMS+"( "+
             COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
             COLUMN_NOTES+" TEXT NOT NULL, "+
             COLUMN_TITLE+" TEXT NOT NULL, "+

@@ -8,27 +8,8 @@
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/welcomeTextView"
-        android:layout_marginTop="89dp"
-        android:layout_gravity="center_horizontal"/>
-
-    <Button
-        android:id="@+id/takePhotoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Take New Photo"
-        android:layout_margin="20dp"/>
-
-    <Button
-        android:id="@+id/viewPhotosButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Photos"
-        android:layout_margin="20dp"/>
+    <FrameLayout android:id="@+id/photoListFrame"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 
 </LinearLayout>

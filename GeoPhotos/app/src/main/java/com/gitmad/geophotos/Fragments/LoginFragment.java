@@ -1,6 +1,7 @@
 package com.gitmad.geophotos.Fragments;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import com.gitmad.geophotos.R;
  * {@link com.gitmad.geophotos.Fragments.LoginFragment.LoginListener} interface
  * to handle interaction events.
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends DialogFragment {
 
     private LoginListener listener;
 

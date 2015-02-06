@@ -6,8 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.TextView;
+
+import com.gitmad.geophotos.R;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 import static com.gitmad.geophotos.MySQLiteHelper.*;
 
@@ -37,11 +41,17 @@ public class Photo implements Parcelable {
     }
 
     public Photo(long id, double longitude, double latitude, String notes, long timeTaken) {
-        this.id = id;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.notes = notes;
-        this.timeTaken = timeTaken;
+        this(id, longitude, latitude, notes, timeTaken, null, -1);
+    }
+
+    public Photo(long id, double longitude, double latitude, String notes, long timeTaken,
+                 Bitmap bmp) {
+        this(id, longitude, latitude, notes, timeTaken, bmp, -1);
+    }
+
+    public Photo(long id, double longitude, double latitude, String notes, long timeTaken,
+                 long albumId) {
+        this(id, longitude, latitude, notes, timeTaken, null, albumId);
     }
 
     public long getId() {
@@ -68,6 +78,15 @@ public class Photo implements Parcelable {
         return timeTaken;
     }
 
+    public String getFormattedTime() {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(getTimeTaken());
+        return String.format("%2d:%2d%s %s %2d, %4d",
+                cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), cal.get(Calendar.AM_PM),
+                cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.YEAR));
+    }
+
     public long getAlbumId() {
         return albumId;
     }
@@ -80,6 +99,7 @@ public class Photo implements Parcelable {
                     null, null, null, null);
 
             if (crsr.getCount() == 1) {
+                crsr.moveToFirst();
                 byte[] bitmapBytes = crsr.getBlob(crsr.getColumnIndex(COLUMN_IMAGE));
                 bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
             } else {
@@ -130,7 +150,7 @@ public class Photo implements Parcelable {
         latitude = in.readFloat();
         notes = in.readString();
         timeTaken = in.readLong();
-        bitmap = (Bitmap) in.readParcelable(ClassLoader.getSystemClassLoader());
+        bitmap = in.readParcelable(ClassLoader.getSystemClassLoader());
         albumId = in.readLong();
     }
 
@@ -155,5 +175,20 @@ public class Photo implements Parcelable {
     @Override
     public int hashCode() {
         return (int) id;
+    }
+
+    @Override
+    public String toString() {
+        return getFormattedTime();
+    }
+
+    public static Photo[] toPhotoArray(Parcelable[] parcelables) {
+        Photo[] photos = new Photo[parcelables.length];
+
+        for (int i = 0; i < parcelables.length; i++) {
+            photos[i] = (Photo) parcelables[i];
+        }
+
+        return photos;
     }
 }

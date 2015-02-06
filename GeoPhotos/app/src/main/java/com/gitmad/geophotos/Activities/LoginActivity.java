@@ -25,6 +25,7 @@ public class LoginActivity extends ActionBarActivity implements LoginFragment.Lo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
+        new LoginFragment().show(getFragmentManager(), "tag");
     }
 
     @Override

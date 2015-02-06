@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
@@ -24,12 +25,12 @@ import com.gitmad.geophotos.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link EditNotesDialogFragment.PicEditListener} interface
+ * {@link EditNotesFragment.PicEditListener} interface
  * to handle interaction events.
- * Use the {@link EditNotesDialogFragment#newInstance} factory method to
+ * Use the {@link EditNotesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditNotesDialogFragment extends DialogFragment {
+public class EditNotesFragment extends DialogFragment {
 
     private static final String KEY_PHOTO_TO_EDIT = "photoInfoKey";
 
@@ -45,15 +46,17 @@ public class EditNotesDialogFragment extends DialogFragment {
      * @param toEdit photo info to edit
      * @return A new instance of fragment EditNotesDialogFragment.
      */
-    public static EditNotesDialogFragment newInstance(Photo toEdit) {
-        EditNotesDialogFragment fragment = new EditNotesDialogFragment();
+    public static EditNotesFragment newInstance(Photo toEdit) {
+
+        Log.d("mysteryException", "EditNotesDialogFragment.newInstance() start");
+        EditNotesFragment fragment = new EditNotesFragment();
         Bundle args = new Bundle();
         args.putParcelable(KEY_PHOTO_TO_EDIT, toEdit);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public EditNotesDialogFragment() {
+    public EditNotesFragment() {
         // Required empty public constructor
     }
 
@@ -124,7 +127,7 @@ public class EditNotesDialogFragment extends DialogFragment {
         //create Dialog using Builder//
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Notes")
-                .setView(notesEditText)
+                .setView(rootView)
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -133,12 +136,6 @@ public class EditNotesDialogFragment extends DialogFragment {
                                 photo.getTimeTaken(), photo.getBitmap(null),
                                 newAlbumId != -1 ? newAlbumId : photo.getAlbumId());
                         mListener.onPicEdited(newPhoto);
-                    }
-                })
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        mListener.onCancel(photo);
                     }
                 })
                 .create();

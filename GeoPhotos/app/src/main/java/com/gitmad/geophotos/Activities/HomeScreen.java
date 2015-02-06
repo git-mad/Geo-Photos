@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,17 +20,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gitmad.geophotos.Fragments.EditNotesDialogFragment;
+import com.gitmad.geophotos.Fragments.EditNotesFragment;
+import com.gitmad.geophotos.Fragments.PhotoListFragment;
 import com.gitmad.geophotos.Models.Photo;
 import com.gitmad.geophotos.Models.User;
 import com.gitmad.geophotos.MySQLiteHelper;
 import com.gitmad.geophotos.R;
 
+import com.gitmad.geophotos.ReadPhotosFromDatabaseTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 
 import java.io.ByteArrayOutputStream;
@@ -38,9 +43,10 @@ import java.util.Calendar;
 import static com.gitmad.geophotos.MySQLiteHelper.*;
 
 public class HomeScreen extends ActionBarActivity
-        implements EditNotesDialogFragment.PicEditListener,
+        implements EditNotesFragment.PicEditListener,
         GooglePlayServicesClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        PhotoListFragment.OnPhotoChoiceListener {
 
     public static final String KEY_USER_DATA = "userDataKey";
 
@@ -52,7 +58,8 @@ public class HomeScreen extends ActionBarActivity
     private String userName;
     private String emailAddress;
     private String password;
-    private TextView welcomeTextView;
+
+    private PhotoListFragment listFragment;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -72,31 +79,7 @@ public class HomeScreen extends ActionBarActivity
             emailAddress = userData.getEmailAddress();
         }
 
-        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
-        welcomeTextView.setText("Welcome, "+ userName);
-
-        //Set up buttons click listeners//
-        ((Button) findViewById(R.id.takePhotoButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, REQUEST_CODE_IMAGE_CAPTURE);
-                }
-            }
-        });
-
-        ((Button) findViewById(R.id.viewPhotosButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeScreen.this, ViewPhotosActivity.class));
-            }
-        });
-
-        //check if Google Play Services is available//
+        //see helper method below//
         isGooglePlayServicesAvailable();
 
         //set up client//
@@ -104,6 +87,50 @@ public class HomeScreen extends ActionBarActivity
         mGoogleApiClient.connect();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //get photo data//
+        ReadPhotosFromDatabaseTask readTask = new ReadPhotosFromDatabaseTask(this, new ReadPhotosFromDatabaseTask.PhotoReadListener() {
+            @Override
+            public void readAlbum(Photo[] album) {
+                //not concerned//
+            }
+
+            @Override
+            public void readAll(final Photo[] photos) {
+
+                //get location if possible//
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+
+                //attach fragment on ui thread//
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LatLng latLng = null;
+
+                        if (mLastLocation != null) {
+                            latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                        }
+                        listFragment = PhotoListFragment.newInstance(photos, latLng);
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.photoListFrame, listFragment, "listFrag")
+                                .commit();
+                        Log.d("wtf", "added frag()");
+                    }
+                });
+            }
+        });
+        //I ALWAYS FORGET TO DO THIS//
+        readTask.execute();
+    }
+
+    /**
+     * Check if google play Services are available and try to resolve the problem
+     * @return true if GooglePlayServices are available, false otherwise
+     */
     public boolean isGooglePlayServicesAvailable() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode == ConnectionResult.SUCCESS) {
@@ -191,7 +218,11 @@ public class HomeScreen extends ActionBarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_take_photo) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_CODE_IMAGE_CAPTURE);
+            }
             return true;
         }
 
@@ -200,11 +231,11 @@ public class HomeScreen extends ActionBarActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             Bitmap bmp = (Bitmap) data.getExtras().get("data");
+
 
             //try again. Location sometimes takes time to load and taking the picture might//
             //have given it the time necessary//
@@ -217,14 +248,14 @@ public class HomeScreen extends ActionBarActivity
             //If location is still unavailable, set a value that is impossible//
             if (mLastLocation == null) {
                 photo = new Photo(-1, Double.MIN_VALUE, Double.MIN_VALUE,
-                        null, Calendar.getInstance().getTimeInMillis());
+                        null, Calendar.getInstance().getTimeInMillis(), bmp);
             } else {
                 photo = new Photo(-1, mLastLocation.getLongitude(), mLastLocation.getLatitude(),
-                        null, Calendar.getInstance().getTimeInMillis());
+                        null, Calendar.getInstance().getTimeInMillis(), bmp);
             }
 
             //Let user edit the notes for the photo before saving//
-            EditNotesDialogFragment.newInstance(photo)
+            EditNotesFragment.newInstance(photo)
                     .show(getFragmentManager(), "notesDialogFrag");
         } else if (requestCode == CONNECTION_FAILURE_RESOLUTION_REQUEST) {
             /*
@@ -261,14 +292,17 @@ public class HomeScreen extends ActionBarActivity
                 vals.put(COLUMN_LONGITUDE, picToWrite.getLongitude());
                 //compressing Bitmap to png//
                 ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-                vals.put(COLUMN_IMAGE,
-                        picToWrite.getBitmap(db).compress(Bitmap.CompressFormat.PNG, 9, outStream));
+                picToWrite.getBitmap(db).compress(Bitmap.CompressFormat.PNG, 9, outStream);
+
+                vals.put(COLUMN_IMAGE, outStream.toByteArray());
                 vals.put(COLUMN_NOTES, picToWrite.getNotes());
                 vals.put(COLUMN_ALBUM_ID, picToWrite.getAlbumId());
                 vals.put(COLUMN_TIME_TAKEN, picToWrite.getTimeTaken());
 
                 //write to DB//
-                db.insert(TABLE_PHOTOS, null, vals);
+                if (db.insert(TABLE_PHOTOS, null, vals) == -1) {
+                    throw new RuntimeException("didn't insert properly");
+                }
 
                 //Close Out Resources//
                 db.close();
@@ -284,6 +318,14 @@ public class HomeScreen extends ActionBarActivity
     public void onCancel(Photo oldPhoto) {
         //In this case we need to write it either way//
         onPicEdited(oldPhoto);
+    }
+
+    @Override
+    public void onPhotoChosen(Photo photo) {
+        //launch viewing activity//
+        Intent intent = new Intent(this, ViewPhotoActivity.class);
+        intent.putExtra(ViewPhotoActivity.KEY_PHOTO, photo);
+        startActivity(intent);
     }
 
     /*
