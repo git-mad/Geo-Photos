@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_home_screen">Home</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_map">MapActivity</string>
 
 </resources>
