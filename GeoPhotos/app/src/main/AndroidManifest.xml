@@ -27,28 +27,29 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDFG7-Aqbi_PxGpRKgQ3iT2oqBd4uEgPD8" />
+            android:value="AIzaSyA5v9TEsn4JwINLMFazg75L-cd83YdJ-y4" />
 
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".CameraActivity"
             android:label="@string/title_activity_camera" >
         </activity>
         <activity
-            android:name=".HomeScreen"
+            android:name=".HomeScreenActivity"
             android:label="@string/title_activity_home_screen" >
+
         </activity>
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

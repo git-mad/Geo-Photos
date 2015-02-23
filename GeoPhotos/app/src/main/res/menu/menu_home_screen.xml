@@ -1,6 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context="com.gitmad.geophotos.HomeScreen">
+    xmlns:tools="http://schemas.android.com/tools" tools:context="com.gitmad.geophotos.HomeScreenActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <group android:id="@+id/menu_categories"
+        android:enabled="true">
+        <item android:id="@+id/menu_item_home"
+            android:title="Home"/>
+        <item android:id="@+id/menu_item_camera"
+            android:title="Camera"/>
+        <item android:id="@+id/menu_item_map"
+            android:title="Map"/>
+        <item android:id="@+id/menu_item_gallery"
+            android:title="Gallery"
+            android:enabled="false"/>
+        <item android:id="@+id/menu_item_login"
+            android:title="Login"/>
+    </group>
 </menu>
