@@ -43,19 +43,23 @@ public class PhotoDataSource {
 
         long id = database.insert(DatabaseHelper.TABLE_PHOTO, null, cv);
 
-        Cursor cursor = database.query(DatabaseHelper.TABLE_PHOTO,
-                columns, DatabaseHelper.Photo_ID + " = " + id, null,
-                null, null, null);
-        cursor.moveToFirst();
-        PhotoModel photo = cursorToPhotoModel(cursor);
+        Cursor photoCursor = database.query(DatabaseHelper.TABLE_PHOTO,columns,DatabaseHelper.Photo_ID + " = " + id,null,null,null,null);
 
-        //Confirm that we were able to write to the database correctly.
-        Log.d("insertPhoto", "Id: " + photo.get_id());
-        Log.d("insertPhoto", "Path: " + photo.getFilepath());
-        Log.d("insertPhoto", "LocationId: " + photo.getLocation_ID());
+        Log.d("PhotoModel Cursor", "" + photoCursor.getColumnNames().length);
+        Log.d("PhotoModel", "Inserted at ID: " + id);
 
-        cursor.close();
-        return photo;
+        PhotoModel photoModel1 = new PhotoModel();
+
+        if(photoCursor.moveToFirst())
+        {
+            photoModel1 = cursorToPhotoModel(photoCursor);
+        }
+        else
+        {
+            Log.d("PhotoDataSource", "cursor is NULL");
+        }
+
+        return photoModel1;
     }
 
     public ArrayList<PhotoModel> getPhotoList()

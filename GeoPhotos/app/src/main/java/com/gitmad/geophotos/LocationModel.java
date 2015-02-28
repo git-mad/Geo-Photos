@@ -4,17 +4,7 @@ package com.gitmad.geophotos;
  * Created by andre on 2/22/15.
  */
 public class LocationModel {
-
-    /*
-    //Location Table Columns
-    public static final String TABLE_LOCATION = "location";
-    public static final String Location_ID = "_id";
-    public static final String Location_Latitude = "latitude";
-    public static final String Location_Longitude = "longitude";
-    public static final String Location_Name = "name";
-    public static final String Location_Description = "description";
-     */
-
+    //Location Table columns
     private long _id;
     private double latitude;
     private double longitude;

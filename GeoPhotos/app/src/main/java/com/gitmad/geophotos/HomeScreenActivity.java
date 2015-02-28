@@ -20,8 +20,6 @@ public class HomeScreenActivity extends ActionBarActivity {
         setContentView(R.layout.homescreen_layout);
 
         Bundle bundle = getIntent().getExtras();
-        //TODO: Grab the username from the extras, set the username string appropriately.
-        //Stuck? See here: http://stackoverflow.com/questions/4233873/how-to-get-extra-data-from-intent-in-android
 
         if(bundle != null)
         {
