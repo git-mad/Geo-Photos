@@ -80,13 +80,6 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
-
     public void login()
     {
         //Authentication logic will be added here in the future.
@@ -94,7 +87,7 @@ public class LoginActivity extends ActionBarActivity {
         //Hint: Use Extras with the intent to get send the username over.
         //Pro Tip: Get the String from the EditText with userName.getText().toString();
 
-        Intent i = new Intent(this,HomeScreen.class);
+        Intent i = new Intent(this,HomeScreenActivity.class);
 
         if(userNameEditText.getText()!= null) {
             i.putExtra("userName", userNameEditText.getText().toString());
@@ -107,6 +100,12 @@ public class LoginActivity extends ActionBarActivity {
         }
 
         startActivity(i);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
     }
 
     @Override

@@ -8,4 +8,9 @@
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_map">MapActivity</string>
 
+    <string-array name="action_list">
+        <item>Home</item>
+        <item>Map</item>
+        <item>Gallery</item>
+    </string-array>
 </resources>
