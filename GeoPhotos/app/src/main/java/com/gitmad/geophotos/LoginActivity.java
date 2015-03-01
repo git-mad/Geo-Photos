@@ -87,7 +87,7 @@ public class LoginActivity extends ActionBarActivity {
         //Hint: Use Extras with the intent to get send the username over.
         //Pro Tip: Get the String from the EditText with userName.getText().toString();
 
-        Intent i = new Intent(this,HomeScreenActivity.class);
+        Intent i = new Intent(this, MapActivity.class);
 
         if(userNameEditText.getText()!= null) {
             i.putExtra("userName", userNameEditText.getText().toString());

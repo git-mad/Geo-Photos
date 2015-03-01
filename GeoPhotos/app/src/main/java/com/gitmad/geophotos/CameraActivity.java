@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -17,7 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -35,13 +39,18 @@ public class CameraActivity extends ActionBarActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private String mPhotoPath = "";
-    private Button mCaptureButton;
+    private ImageButton mCaptureButton;
+    private ImageButton mSaveButton;
+    private EditText mNameBox;
+    private TextView mLocationText;
     private ImageView mImageView;
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
     private PhotoDataSource mPhotoDataSource;
     private LocationDataSource mLocationDataSource;
     private LocationManager locationManager;
+    private LocationModel mLocationModel;
+    private PhotoModel mPhotoModel;
     private String locationProvider;
 
     @Override
@@ -55,13 +64,24 @@ public class CameraActivity extends ActionBarActivity {
                 .build();
 
         mImageView = (ImageView)findViewById(R.id.imageView);
-        mCaptureButton = (Button)findViewById(R.id.button);
+        mCaptureButton = (ImageButton)findViewById(R.id.button);
         mCaptureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
             }
         });
+
+        mSaveButton = (ImageButton)findViewById(R.id.saveButton);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save();
+            }
+        });
+
+        mNameBox = (EditText)findViewById(R.id.editText);
+       // mLocationText = (TextView)findViewById(R.id.textView);
 
         //Retrieve the last known location.
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -161,7 +181,7 @@ public class CameraActivity extends ActionBarActivity {
 
                 galleryAddPic(); //add the image to the gallery application!
 
-                LocationModel locationModel = new LocationModel();
+                mLocationModel = new LocationModel();
 
                 if(mLastLocation == null)
                 {
@@ -169,17 +189,14 @@ public class CameraActivity extends ActionBarActivity {
                     mLastLocation = locationManager.getLastKnownLocation(locationProvider);
                 }
 
-                locationModel.setLatitude(mLastLocation.getLatitude());
-                locationModel.setLongitude(mLastLocation.getLongitude());
+                mLocationModel.setLatitude(mLastLocation.getLatitude());
+                mLocationModel.setLongitude(mLastLocation.getLongitude());
 
                 //TODO: Get description from a textbox.
-                locationModel.setDescription("Description goes here");
-                locationModel.setName(mPhotoPath);
+                mLocationModel.setDescription(mNameBox.getText().toString());
+                mLocationModel.setName(mPhotoPath);
 
-                LocationDataSource dataSource = new LocationDataSource(this);
-                dataSource.open();
-                locationModel = dataSource.insertLocation(locationModel);
-                dataSource.close();
+
 
                 //Store image thumbnail
                 //Original image can be referenced from mPhotoPath.
@@ -189,18 +206,31 @@ public class CameraActivity extends ActionBarActivity {
                 ByteBuffer buffer = ByteBuffer.allocate(bytes);
                 thumbnail.copyPixelsToBuffer(buffer);
 
-                PhotoModel photoModel = new PhotoModel();
-                photoModel.setData(buffer.array());
-                photoModel.setFilepath(mPhotoPath);
-                photoModel.setLocation_ID(locationModel.get_id());
+                mPhotoModel = new PhotoModel();
+                mPhotoModel.setData(buffer.array());
+                mPhotoModel.setFilepath(mPhotoPath);
+                mPhotoModel.setLocation_ID(mLocationModel.get_id());
 
-                PhotoDataSource photoDataSource = new PhotoDataSource(this);
-                photoDataSource.open();
-                photoDataSource.insertPhoto(photoModel);
-                photoDataSource.close();
+
             }
         }
     }
+
+    private void save()
+    {
+        LocationDataSource dataSource = new LocationDataSource(this);
+        dataSource.open();
+        mLocationModel = dataSource.insertLocation(mLocationModel);
+        dataSource.close();
+
+        PhotoDataSource photoDataSource = new PhotoDataSource(this);
+        photoDataSource.open();
+        photoDataSource.insertPhoto(mPhotoModel);
+        photoDataSource.close();
+
+        finish();
+    }
+
 
     private File createImageFile() throws IOException
     {

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.*;
@@ -32,6 +34,8 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
+    private ImageButton mCameraButton;
+
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
     // Unique tag for the error dialog fragment
@@ -53,6 +57,15 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mCameraButton = (ImageButton)findViewById(R.id.add_button);
+        mCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MapActivity.this, CameraActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     @Override
