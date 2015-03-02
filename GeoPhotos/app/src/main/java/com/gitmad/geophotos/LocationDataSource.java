@@ -59,11 +59,14 @@ public class LocationDataSource {
         Cursor cursor = database.query(DatabaseHelper.TABLE_LOCATION,
                 columns, DatabaseHelper.Location_ID + " = " + id, null,
                 null, null, null);
-        cursor.moveToFirst();
-        LocationModel loc = cursorToLocationModel(cursor);
-        Log.d("insertLocationModel", "id: " + loc.get_id());
-        Log.d("insertLocationModel", "Long: " + loc.getLongitude());
-        Log.d("insertLocationModel", "Lat: " + loc.getLatitude());
+
+        LocationModel loc = new LocationModel();
+
+        if (cursor.moveToFirst()) {
+            loc = cursorToLocationModel(cursor);
+        } else {
+            Log.d("LocationDataSource", "cursor is NULL");
+        }
 
         cursor.close();
         return loc;

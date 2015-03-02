@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class MapActivity extends ActionBarActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -43,6 +44,10 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     private GoogleMap mMap;
 
     private ImageButton mCameraButton;
+
+    private final LocationDataSource locationDataSource = LocationDataSource.getInstance(this);
+
+    private final PhotoDataSource photoDataSource = PhotoDataSource.getInstance(this);
 
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
@@ -60,6 +65,9 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        locationDataSource.open();
+        photoDataSource.open();
 
         setContentView(R.layout.activity_map);
 
@@ -94,6 +102,8 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     @Override
     protected void onStop() {
         mGoogleApiClient.disconnect();
+        locationDataSource.close();
+        photoDataSource.close();
         super.onStop();
     }
 
@@ -109,31 +119,23 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
             }
             if (mMap != null) {
 
-                LocationDataSource locationDataSource = LocationDataSource.getInstance(this);
-                locationDataSource.open();
+                final HashSet<Marker> mMarkers = new HashSet<Marker>();
 
                 ArrayList<LocationModel> locations = locationDataSource.getLocationList();
-
-                PhotoDataSource photoDataSource = PhotoDataSource.getInstance(this);
-                photoDataSource.open();
 
                 for (PhotoModel photo : photoDataSource.getPhotoList()) {
 
                     MarkerOptions marker = new MarkerOptions();
-                    System.out.println(locationDataSource.getLocationList());
                     LocationModel location = new LocationModel();
 
                     for (LocationModel locationModel : locations) {
-                        if (locationModel.get_id()-1 == photo.getLocation_ID()) {
+                        if (locationModel.get_id() == photo.getLocation_ID()) {
                             location = locationModel;
                         }
                     }
 
-                    Bitmap bmp = BitmapFactory.decodeFile(photo.getFilepath());
-                    bmp = bmp.createScaledBitmap(bmp, 100, 100, false);
-                    final BitmapDescriptor image = BitmapDescriptorFactory.fromBitmap(bmp);
-
                     marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
+                            .draggable(true)
                             .title(location.getDescription())
                             .anchor(0.0f, 1.0f)
                             .position(new LatLng(location.getLatitude(), location.getLongitude()));
@@ -144,14 +146,39 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
                         @Override
                         public boolean onMarkerClick(Marker marker) {
+                            mMarkers.add(marker);
+                            LocationModel location = new LocationModel();
+                            for (LocationModel locationModel : locationDataSource.getLocationList()) {
+                                if (locationModel.getLatitude() == marker.getPosition().latitude
+                                        && locationModel.getLongitude() == marker.getPosition().longitude) {
+                                    location = locationModel;
+                                }
+                            }
+                            PhotoModel photo = new PhotoModel();
+                            for (PhotoModel photoModel : photoDataSource.getPhotoList()) {
+                                if (location.get_id() == photoModel.getLocation_ID()) {
+                                    photo = photoModel;
+                                }
+                            }
+                            Bitmap bmp = BitmapFactory.decodeFile(photo.getFilepath());
+                            bmp = bmp.createScaledBitmap(bmp, 100, 100, false);
+                            final BitmapDescriptor image = BitmapDescriptorFactory.fromBitmap(bmp);
                             marker.setIcon(image);
                             return false;
                         }
                     });
                 }
 
-                locationDataSource.close();
-                photoDataSource.close();
+                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+
+                        for (Marker marker : mMarkers) {
+                            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
+                        }
+                    }
+                });
 
             }
 

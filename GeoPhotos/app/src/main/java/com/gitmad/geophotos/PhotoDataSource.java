@@ -52,7 +52,9 @@ public class PhotoDataSource {
 
         long id = database.insert(DatabaseHelper.TABLE_PHOTO, null, cv);
 
-        Cursor photoCursor = database.query(DatabaseHelper.TABLE_PHOTO,columns,DatabaseHelper.Photo_ID + " = " + id,null,null,null,null);
+        Cursor photoCursor = database.query(DatabaseHelper.TABLE_PHOTO,
+                columns,DatabaseHelper.Photo_ID + " = " + id,null,
+                null,null,null);
 
         Log.d("PhotoModel Cursor", "" + photoCursor.getColumnNames().length);
         Log.d("PhotoModel", "Inserted at ID: " + id);
@@ -68,6 +70,7 @@ public class PhotoDataSource {
             Log.d("PhotoDataSource", "cursor is NULL");
         }
 
+        photoCursor.close();
         return photoModel1;
     }
 

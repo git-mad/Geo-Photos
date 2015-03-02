@@ -214,7 +214,7 @@ public class CameraActivity extends ActionBarActivity {
                 mPhotoModel = new PhotoModel();
                 mPhotoModel.setData(buffer.array());
                 mPhotoModel.setFilepath(mPhotoPath);
-                mPhotoModel.setLocation_ID(mLocationModel.get_id());
+                //mPhotoModel.setLocation_ID(mLocationModel.get_id());
 
                 //photoDataSource.open();
                 //photoDataSource.insertPhoto(mPhotoModel);
@@ -233,6 +233,7 @@ public class CameraActivity extends ActionBarActivity {
 
         PhotoDataSource photoDataSource = PhotoDataSource.getInstance(this);
         photoDataSource.open();
+        mPhotoModel.setLocation_ID(mLocationModel.get_id());
         photoDataSource.insertPhoto(mPhotoModel);
         photoDataSource.close();
 
