@@ -45,9 +45,9 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
     private ImageButton mCameraButton;
 
-    private final LocationDataSource locationDataSource = LocationDataSource.getInstance(this);
+    private LocationDataSource locationDataSource = null;
 
-    private final PhotoDataSource photoDataSource = PhotoDataSource.getInstance(this);
+    private PhotoDataSource photoDataSource = null;
 
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
@@ -65,9 +65,6 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-
-        locationDataSource.open();
-        photoDataSource.open();
 
         setContentView(R.layout.activity_map);
 
@@ -120,6 +117,12 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
             if (mMap != null) {
 
                 final HashSet<Marker> mMarkers = new HashSet<Marker>();
+
+                locationDataSource = LocationDataSource.getInstance(this);
+                photoDataSource = PhotoDataSource.getInstance(this);
+
+                locationDataSource.open();
+                photoDataSource.open();
 
                 ArrayList<LocationModel> locations = locationDataSource.getLocationList();
 
