@@ -196,7 +196,12 @@ public class CameraActivity extends ActionBarActivity {
                 mLocationModel.setDescription(mNameBox.getText().toString());
                 mLocationModel.setName(mPhotoPath);
 
+                //LocationDataSource locationDataSource = LocationDataSource.getInstance(this);
+                //PhotoDataSource photoDataSource = PhotoDataSource.getInstance(this);
 
+                //locationDataSource.open();
+                //locationDataSource.insertLocation(mLocationModel);
+                //locationDataSource.close();
 
                 //Store image thumbnail
                 //Original image can be referenced from mPhotoPath.
@@ -211,6 +216,9 @@ public class CameraActivity extends ActionBarActivity {
                 mPhotoModel.setFilepath(mPhotoPath);
                 mPhotoModel.setLocation_ID(mLocationModel.get_id());
 
+                //photoDataSource.open();
+                //photoDataSource.insertPhoto(mPhotoModel);
+                //photoDataSource.close();
 
             }
         }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -84,6 +85,26 @@ public class LocationDataSource {
         // make sure to close the cursor
         cursor.close();
         return locations;
+    }
+
+    public LocationModel getLocation(long location_id) {
+
+        Cursor cursor = database.query(DatabaseHelper.TABLE_LOCATION,
+                new String[]{ DatabaseHelper.Location_ID, DatabaseHelper.Location_Longitude, DatabaseHelper.Location_Latitude },
+                DatabaseHelper.Location_ID + " = " + location_id,
+                null, null, null, null);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            LocationModel location = new LocationModel();
+            location.set_id(cursor.getLong(0));
+            location.setLongitude(cursor.getDouble(1));
+            location.setLatitude(cursor.getDouble(2));
+            cursor.close();
+            return location;
+        }
+
+        return null;
     }
 
     public LocationModel cursorToLocationModel(Cursor cursor)

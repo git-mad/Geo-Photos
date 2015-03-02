@@ -2,6 +2,7 @@ package com.gitmad.geophotos;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -26,6 +27,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 public class MapActivity extends ActionBarActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -109,29 +112,38 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 LocationDataSource locationDataSource = LocationDataSource.getInstance(this);
                 locationDataSource.open();
 
+                ArrayList<LocationModel> locations = locationDataSource.getLocationList();
+
                 PhotoDataSource photoDataSource = PhotoDataSource.getInstance(this);
                 photoDataSource.open();
 
                 for (PhotoModel photo : photoDataSource.getPhotoList()) {
+
                     MarkerOptions marker = new MarkerOptions();
+                    System.out.println(locationDataSource.getLocationList());
+                    LocationModel location = new LocationModel();
+
+                    for (LocationModel locationModel : locations) {
+                        if (locationModel.get_id()-1 == photo.getLocation_ID()) {
+                            location = locationModel;
+                        }
+                    }
+
+                    Bitmap bmp = BitmapFactory.decodeFile(photo.getFilepath());
+                    bmp = bmp.createScaledBitmap(bmp, 100, 100, false);
+                    final BitmapDescriptor image = BitmapDescriptorFactory.fromBitmap(bmp);
 
                     marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
-                            .title("something")
+                            .title(location.getDescription())
                             .anchor(0.0f, 1.0f)
-                            .position(new LatLng(mLatitude, mLongitude));
+                            .position(new LatLng(location.getLatitude(), location.getLongitude()));
 
                     mMap.addMarker(marker);
-
-                    byte[] blob = photo.getData();
-                    Bitmap bmp = BitmapFactory.decodeByteArray(blob, 0, blob.length);
-                    final BitmapDescriptor image = BitmapDescriptorFactory.fromBitmap(bmp);
 
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-                            // put shit here
-                            marker.setTitle("something else");
                             marker.setIcon(image);
                             return false;
                         }
