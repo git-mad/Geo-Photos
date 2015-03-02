@@ -218,12 +218,12 @@ public class CameraActivity extends ActionBarActivity {
 
     private void save()
     {
-        LocationDataSource dataSource = new LocationDataSource(this);
+        LocationDataSource dataSource = LocationDataSource.getInstance(this);
         dataSource.open();
         mLocationModel = dataSource.insertLocation(mLocationModel);
         dataSource.close();
 
-        PhotoDataSource photoDataSource = new PhotoDataSource(this);
+        PhotoDataSource photoDataSource = PhotoDataSource.getInstance(this);
         photoDataSource.open();
         photoDataSource.insertPhoto(mPhotoModel);
         photoDataSource.close();

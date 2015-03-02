@@ -22,7 +22,16 @@ public class PhotoDataSource {
             DatabaseHelper.Photo_Data,
     };
 
-    public PhotoDataSource(Context context) {
+    private static PhotoDataSource mPhotoDataSource = null;
+
+    public static PhotoDataSource getInstance(Context context) {
+        if (mPhotoDataSource == null) {
+            mPhotoDataSource = new PhotoDataSource(context);
+        }
+        return mPhotoDataSource;
+    }
+
+    private PhotoDataSource(Context context) {
         databaseHelper = new DatabaseHelper(context);
     }
 
@@ -66,7 +75,8 @@ public class PhotoDataSource {
     {
         ArrayList<PhotoModel> pictures = new ArrayList<PhotoModel>();
 
-        Cursor cursor = database.query(DatabaseHelper.TABLE_LOCATION,
+
+        Cursor cursor = database.query(DatabaseHelper.TABLE_PHOTO,
                 columns, null, null, null, null, null);
 
         cursor.moveToFirst();
@@ -78,6 +88,7 @@ public class PhotoDataSource {
         // make sure to close the cursor
         cursor.close();
         return pictures;
+
     }
 
     public PhotoModel cursorToPhotoModel(Cursor cursor)

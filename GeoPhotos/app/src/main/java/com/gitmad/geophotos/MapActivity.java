@@ -2,6 +2,8 @@ package com.gitmad.geophotos;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.*;
@@ -18,8 +21,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends ActionBarActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -100,13 +105,42 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLatitude, mLongitude), 13));
             }
             if (mMap != null) {
-                mMap.addMarker(new MarkerOptions()
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_new_picture))
-                                .title("You are here")
-                                .snippet("go take some pictures")
-                                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                                .position(new LatLng(mLatitude, mLongitude))
-                );
+
+                LocationDataSource locationDataSource = LocationDataSource.getInstance(this);
+                locationDataSource.open();
+
+                PhotoDataSource photoDataSource = PhotoDataSource.getInstance(this);
+                photoDataSource.open();
+
+                for (PhotoModel photo : photoDataSource.getPhotoList()) {
+                    MarkerOptions marker = new MarkerOptions();
+
+                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
+                            .title("something")
+                            .anchor(0.0f, 1.0f)
+                            .position(new LatLng(mLatitude, mLongitude));
+
+                    mMap.addMarker(marker);
+
+                    byte[] blob = photo.getData();
+                    Bitmap bmp = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+                    final BitmapDescriptor image = BitmapDescriptorFactory.fromBitmap(bmp);
+
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            // put shit here
+                            marker.setTitle("something else");
+                            marker.setIcon(image);
+                            return false;
+                        }
+                    });
+                }
+
+                locationDataSource.close();
+                photoDataSource.close();
+
             }
 
         }

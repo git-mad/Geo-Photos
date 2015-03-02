@@ -24,7 +24,16 @@ public class LocationDataSource {
             DatabaseHelper.Location_Latitude,
     };
 
-    public LocationDataSource(Context context) {
+    private static LocationDataSource mLocationDataSource = null;
+
+    public static LocationDataSource getInstance(Context context) {
+        if (mLocationDataSource == null) {
+            mLocationDataSource = new LocationDataSource(context);
+        }
+        return mLocationDataSource;
+    }
+
+    private LocationDataSource(Context context) {
         databaseHelper = new DatabaseHelper(context);
     }
 
